@@ -27,7 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     if (
         !developmentChains.includes(network.name) &&
-        process.env.ETHERSCAN_API_KEY
+        process.env.ETHER_SCAN_API
     ) {
         await verify(fundMe.address, [ethUsdPriceFeedAddress])
     }
