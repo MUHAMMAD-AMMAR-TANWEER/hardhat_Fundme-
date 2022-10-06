@@ -43,7 +43,7 @@ module.exports = {
     gasReporter: {
         enabled: true,
         // outputFile: "gas-report.txt",
-        // noColor: true,
+        noColor: true,
         token: "MATIC",
     },
     namedAccounts: {

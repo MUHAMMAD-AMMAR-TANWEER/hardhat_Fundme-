@@ -3,8 +3,8 @@ pragma solidity ^0.8.8;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./PriceConverter.sol";
-
-error FundMe_NotOwner();
+import "hardhat/console.sol";
+error FundMe__NotOwner();
 
 /** @title A contract for crowd funding
  * @author Muhammad Ammar Tanweer
@@ -21,6 +21,12 @@ contract FundMe {
     address public immutable i_owner;
     uint256 public constant MINIMUM_USD = 50 * 10**18;
     AggregatorV3Interface public priceFeed;
+    modifier onlyOwner() {
+        // require(msg.sender == owner);
+        if (msg.sender != i_owner) revert FundMe__NotOwner();
+        _;
+    }
+
 
     constructor(address _priceFeedAddress) {
         i_owner = msg.sender;
@@ -45,11 +51,11 @@ contract FundMe {
         funders.push(msg.sender);
     }
 
-    modifier onlyOwner() {
-        // require(msg.sender == owner);
-        if (msg.sender != i_owner) revert FundMe_NotOwner();
-        _;
-    }
+    // modifier onlyOwner() {
+    //     // require(msg.sender == owner);
+    //     if (msg.sender != i_owner) revert FundMe__NotOwner();
+    //     _;
+    // }
 
     function withdraw() public onlyOwner {
         for (
