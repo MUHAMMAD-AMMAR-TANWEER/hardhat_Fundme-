@@ -14,8 +14,8 @@ error FundMe__NotOwner();
 contract FundMe {
     using PriceConverter for uint256;
 
-    mapping(address => uint256) public addressToAmountFunded;
-    address[] public funders;
+    mapping(address => uint256) public s_addressToAmountFunded;
+    address[] public s_funders;
 
     // Could we make this constant?  /* hint: no! We should make it immutable! */
     address public immutable i_owner;
@@ -47,8 +47,8 @@ contract FundMe {
             "You need to spend more ETH!"
         );
         // require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");
-        addressToAmountFunded[msg.sender] += msg.value;
-        funders.push(msg.sender);
+        s_addressToAmountFunded[msg.sender] += msg.value;
+        s_funders.push(msg.sender);
     }
 
     // modifier onlyOwner() {
@@ -57,16 +57,16 @@ contract FundMe {
     //     _;
     // }
 
-    function withdraw() public onlyOwner {
+    function withdraw() public payable onlyOwner {
         for (
             uint256 funderIndex = 0;
-            funderIndex < funders.length;
+            funderIndex < s_funders.length;
             funderIndex++
         ) {
-            address funder = funders[funderIndex];
-            addressToAmountFunded[funder] = 0;
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
         }
-        funders = new address[](0);
+        s_funders = new address[](0);
         // // transfer
         // payable(msg.sender).transfer(address(this).balance);
         // // send
@@ -78,6 +78,24 @@ contract FundMe {
         }("");
         require(callSuccess, "Call failed");
     }
+
+    function cheapWithDraw() public payable onlyOwner {
+        address[] memory funders = s_funders;
+        for (uint256 funderIndex=0; funderIndex< funders.length; funderIndex ++) {
+            address funder = funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+
+        }
+
+        s_funders = new address[](0);
+
+        (bool callSuccess, ) = i_owner.call{
+        value: address(this).balance
+        }("");
+        require(callSuccess, "Call failed");
+    }
+
+    
     // Explainer from: https://solidity-by-example.org/fallback/
     // Ether is sent to contract
     //      is msg.data empty?
