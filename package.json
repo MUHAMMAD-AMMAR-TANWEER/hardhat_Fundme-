@@ -2,6 +2,7 @@
   "name": "hardhat-fundme-fcc",
   "version": "1.0.0",
   "license": "MIT",
+  "author":"Muhammad Ammar Tanweer",
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
     "@ethersproject/providers": "^5.4.7",
@@ -31,5 +32,13 @@
     "@chainlink/contracts": "^0.4.1",
     "dotenv": "^16.0.2",
     "solhint": "^3.3.7"
+  },
+  "scripts": {
+    "test": "yarn hardhat test",
+    "test:staging": "yarn hardhat test --network goerli",
+    "lint":"yarn solhint 'contracts/*.sol'",
+    "lint:fix":"yarn solhint 'contracts/*.sol' --fix",
+    "format": "yarn prettier --write .",
+    "coverage":"yarn hardhat coverage"
   }
 }
